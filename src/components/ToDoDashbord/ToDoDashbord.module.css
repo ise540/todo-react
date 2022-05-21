@@ -1,0 +1,16 @@
+.dashbord {
+    background-color: antiquewhite;
+    height: 100vh;
+    width: 100vw;
+}
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    background-color: gray;
+    height: 80vh;
+}

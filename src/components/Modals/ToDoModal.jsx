@@ -1,44 +1,45 @@
 import React, { useEffect, useState } from "react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Modal from "../Modal/Modal";
-import { IconButton, TextField, MenuItem } from "@mui/material";
+import { IconButton, TextField, MenuItem, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch } from "react-redux";
-import { removeToDoAction } from "../../store/todoReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { removeToDoAction, updateToDoAction } from "../../store/todoReducer";
 
 export default function ToDoModal({ todo, isOpen, setIsOpen, ...props }) {
   const dispatch = useDispatch();
+
+  const statusList = useSelector((state) => state.statusReducer.statusList);
+  const todoList = useSelector((state) => state.todoReducer.todoList);
 
   function removeToDo() {
     dispatch(removeToDoAction(todo.id));
   }
 
+  function updateToDo(todo) {
+    dispatch(updateToDoAction({
+      id: todo.id,
+      title: titleInput,
+      description: descriptionInput,
+      status: statusInput
+    }))
+  }
+
   const [editing, setEditing] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
+  const [titleInput, setTitleInput] = useState("");
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const [statusInput, setStatusInput] = useState("");
 
   useEffect(() => {
-    setTitle(todo.title);
-    setDescription(todo.description);
-    setStatus(todo.status);
+    setTitleInput(todo.titleInput);
+    setDescriptionInput(todo.descriptionInput);
+    setStatusInput(todo.statusInput);
   }, [todo]);
 
   const handleChange = (event) => {
-    setStatus(event.target.value);
+    setStatusInput(event.target.value);
   };
-
-  const statuses = [
-    {
-      value: "true",
-      label: "true",
-    },
-    {
-      value: "false",
-      label: "false",
-    },
-  ];
 
   return (
     <Modal isVisible={isOpen} setVisible={setIsOpen}>
@@ -47,9 +48,9 @@ export default function ToDoModal({ todo, isOpen, setIsOpen, ...props }) {
         label="Заголовок"
         variant="standard"
         color="warning"
-        value={title}
+        value={titleInput}
         inputProps={{ readOnly: !editing }}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => setTitleInput(e.target.value)}
       />
 
       <TextField
@@ -59,43 +60,57 @@ export default function ToDoModal({ todo, isOpen, setIsOpen, ...props }) {
         focused
         multiline
         maxRows={4}
-        value={description}
+        value={descriptionInput}
         inputProps={{ readOnly: !editing }}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => setDescriptionInput(e.target.value)}
       />
       <TextField
         id="standard-select-currency"
         select
         label="Статус"
-        value={status}
+        value={statusInput}
         onChange={handleChange}
         variant="standard"
         inputProps={{ readOnly: !editing }}
       >
-        {statuses.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
+        {statusList.map((status) => (
+          <MenuItem key={status.id} value={status.status}>
+            {status.status}
           </MenuItem>
         ))}
       </TextField>
-
-      <IconButton
-        variant="contained"
-        color="primary"
-        aria-label="upload picture"
-        component="span"
-        onClick={() => setEditing(!editing)}
-      >
-        <ModeEditIcon />
-      </IconButton>
-      <IconButton
+      <Button
+        variant="outlined"
         onClick={() => {
           removeToDo();
           setIsOpen(false);
         }}
       >
         <DeleteIcon />
-      </IconButton>
+      </Button>
+      {!editing ? <Button
+        variant="outlined"
+        color="primary"
+        component="span"
+        onClick={() => setEditing(!editing)}
+      >
+        <ModeEditIcon />
+      </Button>
+        :
+        <Button
+          variant="contained"
+          color="primary"
+          component="span"
+          onClick={() => {
+            setEditing(!editing);
+            updateToDo(todo);
+            setIsOpen(false);
+          }}
+        >
+          Сохранить
+        </Button>}
+
+
     </Modal>
   );
 }

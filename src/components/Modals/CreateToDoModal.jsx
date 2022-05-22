@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../Modal/Modal";
 import { addToDoAction } from "../../store/todoReducer";
 import { v4 as uuidv4 } from "uuid";
@@ -9,6 +9,7 @@ export default function CreateToDoModal({ isOpen, setIsOpen, ...props }) {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const statusList = useSelector((state) => state.statusReducer.statusList);
 
   function addToDo() {
     dispatch(
@@ -16,7 +17,7 @@ export default function CreateToDoModal({ isOpen, setIsOpen, ...props }) {
         id: uuidv4(),
         title,
         description,
-        status: "В процессывывывые",
+        status: statusList[0].status,
       })
     );
   }

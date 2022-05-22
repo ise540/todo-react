@@ -8,11 +8,11 @@ const initialState = {
 export const statusReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_STATUS:
-      return { ...state, todoList: [...state.todoList, action.payload] };
+      return { ...state, statusList: [...state.statusList, action.payload] };
     case REMOVE_STATUS:
       return {
         ...state,
-        todoList: state.todoList.filter((item) => item.id !== action.payload),
+        statusList: state.statusList.filter((item) => item.id !== action.payload),
       };
 
     default:
@@ -20,10 +20,10 @@ export const statusReducer = (state = initialState, action) => {
   }
 };
 
-export const addToDoAction = (payload) => {
+export const addToDoStatus = (payload) => {
   return { type: ADD_STATUS, payload };
 };
 
-export const removeToDoAction = (payload) => {
+export const removeToDoStatus = (payload) => {
   return { type: REMOVE_STATUS, payload };
 };

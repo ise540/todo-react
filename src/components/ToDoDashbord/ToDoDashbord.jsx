@@ -12,8 +12,7 @@ import { updateToDoAction } from "../../store/todoReducer";
 export default function ToDoDashbord() {
   const todoList = useSelector((state) => state.todoReducer.todoList);
   const statusList = useSelector((state) => state.statusReducer.statusList);
-  const dispatcher = useDispatch();
-  console.log(statusList)
+  const dispatch = useDispatch();
 
   const [currentToDo, setCurrentToDo] = useState({});
 
@@ -23,7 +22,7 @@ export default function ToDoDashbord() {
 
 
   function updateStatus(todo, newStatus) {
-    dispatcher(updateToDoAction(
+    dispatch(updateToDoAction(
       ({
         id: todo.id,
         title: todo.title,

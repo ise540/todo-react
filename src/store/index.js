@@ -15,5 +15,5 @@ const rootReducer = combineReducers({
 
 export const store = createStoreWithMiddleware(
     rootReducer,    
-    load() // Loading done here
+    load()
 )   

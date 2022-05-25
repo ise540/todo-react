@@ -15,7 +15,7 @@ export default function Modal({ children, isVisible, setVisible, ...props }) {
             position: "absolute",
             top: "10px",
             right: "5px",
-            zIndex:'2'
+            zIndex: '2'
           }}
           onClick={() => {
             setVisible(false);

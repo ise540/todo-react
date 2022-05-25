@@ -20,7 +20,7 @@ export default function CreateStatusModal({ isOpen, setIsOpen, ...props }) {
     return (
         <Modal isVisible={isOpen} setVisible={setIsOpen}>
             <h1>Добавить статус</h1>
-            <TextField sx={{marginBottom:'15px'}} id="standard-basic" label="Статус" variant="standard" value={status} onChange={(e) => setStatus(e.target.value)} />
+            <TextField sx={{ marginBottom: '15px' }} label="Статус" variant="standard" value={status} onChange={(e) => setStatus(e.target.value)} />
             <Button variant="contained" onClick={addStatus}>Добавить</Button>
         </Modal>
     );

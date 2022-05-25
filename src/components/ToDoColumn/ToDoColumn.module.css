@@ -1,12 +1,14 @@
 .column {
     display: flex;
     flex-direction: column;
+    align-content: center;
     background-color: rgb(255, 255, 255);
     height: 100vh;
     position:relative;
     grid-row: 1;
     border-radius: 5px;
-    box-shadow: 1px 2px 5px 1px #00000080
+    box-shadow: 1px 2px 5px 1px #00000080;
+    padding: 5px;
 }
 
 .button {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import Modal from "../Modal/Modal";
 import { addToDoStatus } from "../../store/statusReducer";
 import { v4 as uuidv4 } from "uuid";
@@ -19,11 +19,9 @@ export default function CreateStatusModal({ isOpen, setIsOpen, ...props }) {
 
     return (
         <Modal isVisible={isOpen} setVisible={setIsOpen}>
-            <div>
-                <input onChange={(e) => setStatus(e.target.value)}></input>
-                <Button onClick={addStatus}>Добавить</Button>
-
-            </div>
+            <h1>Добавить статус</h1>
+            <TextField sx={{marginBottom:'15px'}} id="standard-basic" label="Статус" variant="standard" value={status} onChange={(e) => setStatus(e.target.value)} />
+            <Button variant="contained" onClick={addStatus}>Добавить</Button>
         </Modal>
     );
 }

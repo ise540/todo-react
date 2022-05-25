@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/Button";
 import { removeToDoStatus } from "../../store/statusReducer"
 
-export default function ToDoColumn({ title, id, children, ...props }) {
+export default function ToDoColumn({ column, children, ...props }) {
     const dispatcher = useDispatch();
 
     function removeStatus(id) {
@@ -13,7 +13,7 @@ export default function ToDoColumn({ title, id, children, ...props }) {
     }
 
     return (
-        <div className={cls.column}>
+        <div className={cls.column} {...props} >
             <IconButton className={cls.button}
                 sx={{
                     position: "absolute",
@@ -21,12 +21,12 @@ export default function ToDoColumn({ title, id, children, ...props }) {
                     right: "5px",
                 }}
                 onClick={() => {
-                    removeStatus(id);
+                    removeStatus(column.id);
                 }}
             >
                 <CloseIcon />
             </IconButton>
-            <h1>{title}</h1>
+            <h1>{column.status}</h1>
             {children}
         </div>
     )

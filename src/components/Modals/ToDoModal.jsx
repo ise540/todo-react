@@ -1,101 +1,122 @@
 import React, { useEffect, useState } from "react";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Modal from "../Modal/Modal";
-import { IconButton, TextField, MenuItem } from "@mui/material";
+import { Select, TextField, MenuItem, Button, InputLabel, FormControl  } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch } from "react-redux";
-import { removeToDoAction } from "../../store/todoReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { removeToDoAction, updateToDoAction } from "../../store/todoReducer";
 
 export default function ToDoModal({ todo, isOpen, setIsOpen, ...props }) {
   const dispatch = useDispatch();
+
+  const statusList = useSelector((state) => state.statusReducer.statusList);
+
+  const [editing, setEditing] = useState(false);
+
+  const [titleInput, setTitleInput] = useState(todo.title);
+  const [descriptionInput, setDescriptionInput] = useState(todo.description);
+  const [statusInput, setStatusInput] = useState(todo.status);
+
+  useEffect(() => {
+    setTitleInput(todo.title);
+    setDescriptionInput(todo.description);
+    setStatusInput(todo.status);
+  }, [todo]);
+
+  const handleChange = (event) => {
+    setStatusInput(event.target.value);
+  };
 
   function removeToDo() {
     dispatch(removeToDoAction(todo.id));
   }
 
-  const [editing, setEditing] = useState(false);
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
-
-  useEffect(() => {
-    setTitle(todo.title);
-    setDescription(todo.description);
-    setStatus(todo.status);
-  }, [todo]);
-
-  const handleChange = (event) => {
-    setStatus(event.target.value);
-  };
-
-  const statuses = [
-    {
-      value: "true",
-      label: "true",
-    },
-    {
-      value: "false",
-      label: "false",
-    },
-  ];
+  function updateToDo(todo) {
+    dispatch(updateToDoAction({
+      id: todo.id,
+      title: titleInput,
+      description: descriptionInput,
+      status: statusInput
+    }))
+  }
 
   return (
     <Modal isVisible={isOpen} setVisible={setIsOpen}>
       <h5>id: {todo.id}</h5>
-      <TextField
+      <TextField sx={{ marginBottom: '5px' }}
         label="Заголовок"
         variant="standard"
-        color="warning"
-        value={title}
+        
+        value={titleInput}
         inputProps={{ readOnly: !editing }}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => setTitleInput(e.target.value)}
       />
 
-      <TextField
+      <TextField sx={{ marginBottom: '5px' }}
         label="Описание"
         variant="standard"
-        color="secondary"
-        focused
         multiline
         maxRows={4}
-        value={description}
+        value={descriptionInput}
         inputProps={{ readOnly: !editing }}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => setDescriptionInput(e.target.value)}
       />
-      <TextField
-        id="standard-select-currency"
-        select
+      <FormControl>
+      <InputLabel variant="standard" sx={{fontSize:'1rem'}}>
+          Статус
+        </InputLabel>
+      <Select sx={{ marginBottom: '10px' }}
         label="Статус"
-        value={status}
+        value={statusInput ?? ""}
         onChange={handleChange}
         variant="standard"
         inputProps={{ readOnly: !editing }}
       >
-        {statuses.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
+        {statusList.map((status) => (
+          <MenuItem key={status.id} value={status.status}>
+            {status.status}
           </MenuItem>
         ))}
-      </TextField>
+      </Select>
+      </FormControl>
+      <div style={{
+        display:'flex',
+        justifyContent:'space-between'
+      }}>
+        {!editing ? <Button sx={{ marginBottom: '5px' }}
+          variant="outlined"
+          color="primary"
+          component="span"
+          onClick={() => setEditing(!editing)}
+        >
+          <ModeEditIcon />
+        </Button>
+          :
+          <Button sx={{ marginBottom: '5px' }}
+            variant="contained"
+            color="primary"
+            component="span"
+            onClick={() => {
+              setEditing(!editing);
+              updateToDo(todo);
+              setIsOpen(false);
+            }}
+          >
+            Сохранить
+          </Button>}
+        <Button sx={{ marginBottom: '5px' }}
+          variant="outlined"
+          color='error'
+          onClick={() => {
+            removeToDo();
+            setIsOpen(false);
+          }}
+        >
+          <DeleteIcon />
+        </Button>
 
-      <IconButton
-        variant="contained"
-        color="primary"
-        aria-label="upload picture"
-        component="span"
-        onClick={() => setEditing(!editing)}
-      >
-        <ModeEditIcon />
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          removeToDo();
-          setIsOpen(false);
-        }}
-      >
-        <DeleteIcon />
-      </IconButton>
+      </div>
+
     </Modal>
   );
 }

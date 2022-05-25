@@ -1,10 +1,19 @@
 import { statusReducer } from "./statusReducer";
 import { todoReducer } from "./todoReducer";
-import { createStore, combineReducers } from "redux";
+import { applyMiddleware, createStore, combineReducers } from "redux";
+import { save, load } from "redux-localstorage-simple"
+
+const createStoreWithMiddleware 
+    = applyMiddleware(
+        save()
+    )(createStore)
 
 const rootReducer = combineReducers({
     statusReducer,
     todoReducer
 })
 
-export const store = createStore(rootReducer);
+export const store = createStoreWithMiddleware(
+    rootReducer,    
+    load() // Loading done here
+)   

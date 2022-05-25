@@ -1,27 +1,50 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ToDoCard from "../ToDoCard/ToDoCard";
 import cls from "./ToDoDashbord.module.css";
 import { Button } from "@mui/material";
 import CreateToDoModal from "../Modals/CreateToDoModal";
 import ToDoModal from "../Modals/ToDoModal";
+import CreateStatusModal from "../Modals/CreateStatusModal";
+import ToDoColumn from "../ToDoColumn/ToDoColumn";
+import { updateToDoAction } from "../../store/todoReducer";
 
 export default function ToDoDashbord() {
   const todoList = useSelector((state) => state.todoReducer.todoList);
-  console.log(todoList);
+  const statusList = useSelector((state) => state.statusReducer.statusList);
+  const dispatcher = useDispatch();
+  console.log(statusList)
 
   const [currentToDo, setCurrentToDo] = useState({});
 
   const [visibleCreateModal, setVisibleCreateModal] = useState(false);
   const [visibleToDoModal, setVisibleToDoModal] = useState(false);
+  const [visibleStatusModal, setVisibleStatusModal] = useState(false);
 
-  const columns = ["Не выполнено", "В процессе", "Выполнено"];
+
+  function updateStatus(todo, newStatus) {
+    dispatcher(updateToDoAction(
+      ({
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        status: newStatus
+      })
+    ))
+  }
+
 
   return (
     <div className={cls.dashbord}>
+      
       <CreateToDoModal
         isOpen={visibleCreateModal}
         setIsOpen={setVisibleCreateModal}
+      />
+
+      <CreateStatusModal
+        isOpen={visibleStatusModal}
+        setIsOpen={setVisibleStatusModal}
       />
 
       <ToDoModal
@@ -29,36 +52,66 @@ export default function ToDoDashbord() {
         setIsOpen={setVisibleToDoModal}
         todo={currentToDo}
       />
+      <header className={cls.header}>
+      <h1>ToDo Dashbord</h1>
+      <div >
+      {statusList.length === 0 ? <h2 className={cls.message}>Добавьте статусы</h2> :
+        <Button sx={{margin:'5px'}}
+          variant="contained" onClick={() => setVisibleCreateModal(true)}>
+          Добавить задачу
+        </Button>
+      }
 
-      <Button variant="contained" onClick={() => setVisibleCreateModal(true)}>
-        Добавить задачу
+
+      <Button variant="contained" onClick={() => setVisibleStatusModal(true)}>
+        Добавить статус
       </Button>
+      </div>
+      </header>
+
       <div className={cls.columns}>
-        {columns.map((column) => {
-          return <div className={cls.column}>{todoList.length < 1 ? (
+        {statusList.map((statusColumn) => {
+          return <ToDoColumn key={statusColumn.id} column={statusColumn} onDrop={(e) => {
+            let draggedTodo = JSON.parse(e.dataTransfer.getData('draggedTodo'));
+            updateStatus(draggedTodo, statusColumn.status)
+            setCurrentToDo({})
+          }}
+            onDragOver={(e) => e.preventDefault()}
+            onDragEnter={(e) => e.preventDefault()}
+          >{todoList.length < 1 ? (
             <div>Пусто</div>
           ) : (
             <div>
               {todoList.map((item) => {
-                if (item.status===column) {
-                return (
-                  <ToDoCard
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    status={item.status}
-                    onClick={(event) => {
-                      setCurrentToDo(item);
-                      setVisibleToDoModal(true);
-                    }}
-                  />
-                );}
+                if (item.status === statusColumn.status) {
+                  return (
+                    <ToDoCard
+                      todo={item}
+                      key={item.id}
+                      onDragStart={(e) => {
+
+                        e.dataTransfer.setData('draggedTodo', JSON.stringify(item))
+                      }}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDragEnter={(e) => e.preventDefault()}
+                      onDragLeave={(e) => e.preventDefault()}
+
+                      onClick={() => {
+                        setCurrentToDo(item);
+                        setVisibleToDoModal(true);
+                      }
+                      }
+                    />
+                  );
+                }
               })}
             </div>
-          )}{column}</div>;
+          )}</ToDoColumn>;
         })}
       </div>
-      
+
     </div>
   );
 }
+
+

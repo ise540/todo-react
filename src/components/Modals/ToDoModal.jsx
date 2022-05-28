@@ -73,7 +73,7 @@ export default function ToDoModal({ todo, isOpen, setIsOpen, ...props }) {
         inputProps={{ readOnly: !editing }}
       >
         {statusList.map((status) => (
-          <MenuItem key={status.id} value={status.status}>
+          <MenuItem key={status.id} value={status}>
             {status.status}
           </MenuItem>
         ))}

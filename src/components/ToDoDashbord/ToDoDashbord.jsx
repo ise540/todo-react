@@ -72,7 +72,7 @@ export default function ToDoDashbord() {
         {statusList.map((statusColumn) => {
           return <ToDoColumn key={statusColumn.id} column={statusColumn} onDrop={(e) => {
             let draggedTodo = JSON.parse(e.dataTransfer.getData('draggedTodo'));
-            updateStatus(draggedTodo, statusColumn.status)
+            updateStatus(draggedTodo, statusColumn)
             setCurrentToDo({})
           }}
             onDragOver={(e) => e.preventDefault()}
@@ -82,7 +82,7 @@ export default function ToDoDashbord() {
           ) : (
             <div>
               {todoList.map((item) => {
-                if (item.status === statusColumn.status) {
+                if (item.status.id === statusColumn.id) {
                   return (
                     <ToDoCard
                       todo={item}

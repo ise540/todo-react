@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../Modal/Modal";
 import { addToDoAction } from "../../store/todoReducer";
@@ -18,10 +18,15 @@ export default function CreateToDoModal({ isOpen, setIsOpen, ...props }) {
         id: uuidv4(),
         title,
         description,
-        status: statusList[0].status,
+        status: statusList[0],
       })
     );
   }
+
+  useEffect(()=> {
+    setTitle('');
+    setDescription('');
+  }, [isOpen])
 
   return (
     <Modal isVisible={isOpen} setVisible={setIsOpen}>
@@ -35,7 +40,9 @@ export default function CreateToDoModal({ isOpen, setIsOpen, ...props }) {
         value={description}
         onChange={(event) => setDescription(event.target.value)}
       />
-      <Button variant="contained" onClick={addToDo}>Добавить</Button>
+      <Button variant="contained" onClick={() => {
+        addToDo();
+        setIsOpen(false)}}>Добавить</Button>
     </Modal>
   );
 }

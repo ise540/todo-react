@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 export default function CreateStatusModal({ isOpen, setIsOpen, ...props }) {
     const dispatch = useDispatch();
     const [status, setStatus] = useState('');
-    console.log(status)
 
     function addStatus() {
         dispatch(addToDoStatus({
